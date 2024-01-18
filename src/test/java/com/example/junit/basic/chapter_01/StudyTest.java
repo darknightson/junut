@@ -1,5 +1,6 @@
 package com.example.junit.basic.chapter_01;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -51,8 +52,22 @@ class StudyTest {
     test 메서드 이름을 표시하는 방법
      */
     @Test
-    void displayName() {
-        System.out.println("displayName");
+    @DisplayName("스터디 만들기 \uD83D\uDE31")
+    void 스터디를_처음_만들면_상태값이_DRAFT_여야_한다() {
+        Study study = new Study();
+        assertNotNull(study);
+
+        System.out.println("study.getStatus() = " + study.getStatus());
+        assertAll(
+                () -> assertNotNull(study),
+                () -> assertEquals(StudyStatus.DRAFT, study.getStatus(), "스터디를 처음 만들면 상태값이 DRAFT 여야 한다."),
+                () -> assertEquals(StudyStatus.DRAFT, study.getStatus(), () -> "스터디를 처음 만들면 상태값이 DRAFT 여야 한다."), // 실패 했을 경우 메시지를 람다로 만들어서 사용할 수 있다.
+                () -> Assertions.assertThat(study.getStatus()).isEqualTo(StudyStatus.DRAFT)
+        );
+        assertEquals(StudyStatus.DRAFT, study.getStatus(), "스터디를 처음 만들면 상태값이 DRAFT 여야 한다.");
+        assertEquals(StudyStatus.DRAFT, study.getStatus(), () -> "스터디를 처음 만들면 상태값이 DRAFT 여야 한다."); // 실패 했을 경우 메시지를 람다로 만들어서 사용할 수 있다.
+        Assertions.assertThat(study.getStatus()).isEqualTo(StudyStatus.DRAFT);
+
     }
 
     @Test
