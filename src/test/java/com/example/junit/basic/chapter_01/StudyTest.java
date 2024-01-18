@@ -2,8 +2,14 @@ package com.example.junit.basic.chapter_01;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.condition.EnabledOnJre;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.JRE;
+import org.junit.jupiter.api.condition.OS;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 // 이거는 언더 스코어를 공백을 바꿔준다 ( 메서드 이름 )
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -62,17 +68,27 @@ class StudyTest {
                 () -> assertNotNull(study),
                 () -> assertEquals(StudyStatus.DRAFT, study.getStatus(), "스터디를 처음 만들면 상태값이 DRAFT 여야 한다."),
                 () -> assertEquals(StudyStatus.DRAFT, study.getStatus(), () -> "스터디를 처음 만들면 상태값이 DRAFT 여야 한다."), // 실패 했을 경우 메시지를 람다로 만들어서 사용할 수 있다.
-                () -> Assertions.assertThat(study.getStatus()).isEqualTo(StudyStatus.DRAFT)
+                () -> assertThat(study.getStatus()).isEqualTo(StudyStatus.DRAFT)
         );
         assertEquals(StudyStatus.DRAFT, study.getStatus(), "스터디를 처음 만들면 상태값이 DRAFT 여야 한다.");
         assertEquals(StudyStatus.DRAFT, study.getStatus(), () -> "스터디를 처음 만들면 상태값이 DRAFT 여야 한다."); // 실패 했을 경우 메시지를 람다로 만들어서 사용할 수 있다.
-        Assertions.assertThat(study.getStatus()).isEqualTo(StudyStatus.DRAFT);
+        assertThat(study.getStatus()).isEqualTo(StudyStatus.DRAFT);
 
     }
 
     @Test
-    void create() {
-        System.out.println("create");
+    //@EnabledOnOs({ OS.MAC, OS.LINUX}) // 맥에서만 아래 테스트 실행
+    @EnabledOnJre({JRE.JAVA_8, JRE.JAVA_11}) // 특정 자바 버전에서만 실행
+    @EnabledOnOs(value = OS.MAC) // 맥에서만 아래 테스트 실행
+    void 조건에_따라_테스트_실행하기() {
+        // assumeTrue : 테스트를 실행할지 말지 결정하는 메서드
+        // 테스트 환경이 로컬일 경우에만 아래 테스트 코드를 실행한다.
+        // 아래 어줌은 확인할 필요가 있다.
+        System.out.println("System.getenv() = " + System.getenv());
+        assumeTrue("LOCAL".equalsIgnoreCase(System.getenv("TEST_ENV")));
+
+        Study study = new Study(10);
+        assertThat(study.getLimit()).isGreaterThan(0);
     }
 
     @Test
