@@ -73,10 +73,9 @@ class StudyTest {
         assertEquals(StudyStatus.DRAFT, study.getStatus(), "스터디를 처음 만들면 상태값이 DRAFT 여야 한다.");
         assertEquals(StudyStatus.DRAFT, study.getStatus(), () -> "스터디를 처음 만들면 상태값이 DRAFT 여야 한다."); // 실패 했을 경우 메시지를 람다로 만들어서 사용할 수 있다.
         assertThat(study.getStatus()).isEqualTo(StudyStatus.DRAFT);
-
     }
 
-    @Test
+    @FastTest
     //@EnabledOnOs({ OS.MAC, OS.LINUX}) // 맥에서만 아래 테스트 실행
     @EnabledOnJre({JRE.JAVA_8, JRE.JAVA_11}) // 특정 자바 버전에서만 실행
     @EnabledOnOs(value = OS.MAC) // 맥에서만 아래 테스트 실행
